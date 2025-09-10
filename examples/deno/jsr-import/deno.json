@@ -4,7 +4,7 @@
     "dev": "deno run --allow-ffi --allow-env --watch main.ts"
   },
   "imports": {
-    "@printers/printers": "jsr:@printers/printers@^0.1.4"
+    "@printers/printers": "jsr:@printers/printers@^0.3"
   },
   "compilerOptions": {
     "strict": true

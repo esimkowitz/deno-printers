@@ -1949,6 +1949,18 @@
         "npm:eslint@^9.35.0",
         "npm:tsx@^4.20.5"
       ]
+    },
+    "members": {
+      "examples/deno/jsr-import": {
+        "dependencies": [
+          "jsr:@printers/printers@0.3"
+        ]
+      },
+      "examples/deno/npm-import": {
+        "dependencies": [
+          "npm:@printers/printers@0.3"
+        ]
+      }
     }
   }
 }

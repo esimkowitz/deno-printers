@@ -79,6 +79,7 @@
       "test-results/",
       ".claude/",
       "examples/",
+      "!examples/deno",
       "*.rs",
       "Cargo.{toml,lock}",
       "package.json",
@@ -109,5 +110,9 @@
       "deno.unstable"
     ],
     "strict": true
-  }
+  },
+  "workspace": [
+    "./examples/deno/jsr-import",
+    "./examples/deno/npm-import"
+  ]
 }
