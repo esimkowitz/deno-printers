@@ -197,33 +197,39 @@ if (isSimulationMode) {
 } else {
   // Load real N-API module
   try {
-    // Platform detection for N-API module loading
-    let platformName: string;
-    let archName: string;
+    // Platform detection for N-API module loading using NAPI-RS target names
+    let platformString: string;
 
-    if (process.platform === "win32") {
-      platformName = "win32";
-    } else if (process.platform === "darwin") {
-      platformName = "darwin";
+    // Map to NAPI-RS standard target names that match build output
+    if (process.platform === "darwin") {
+      if (process.arch === "x64") {
+        platformString = "x86_64-apple-darwin";
+      } else if (process.arch === "arm64") {
+        platformString = "aarch64-apple-darwin";
+      } else {
+        throw new Error(`Unsupported architecture for Darwin: ${process.arch}`);
+      }
+    } else if (process.platform === "win32") {
+      if (process.arch === "x64") {
+        platformString = "x86_64-pc-windows-msvc";
+      } else if (process.arch === "arm64") {
+        platformString = "aarch64-pc-windows-msvc";
+      } else {
+        throw new Error(
+          `Unsupported architecture for Windows: ${process.arch}`
+        );
+      }
+    } else if (process.platform === "linux") {
+      if (process.arch === "x64") {
+        platformString = "x86_64-unknown-linux-gnu";
+      } else if (process.arch === "arm64") {
+        platformString = "aarch64-unknown-linux-gnu";
+      } else {
+        throw new Error(`Unsupported architecture for Linux: ${process.arch}`);
+      }
     } else {
-      platformName = "linux";
+      throw new Error(`Unsupported platform: ${process.platform}`);
     }
-
-    if (process.arch === "x64") {
-      archName = "x64";
-    } else if (process.arch === "arm64") {
-      archName = "arm64";
-    } else {
-      throw new Error(`Unsupported architecture: ${process.arch}`);
-    }
-
-    // Build platform string for N-API module
-    const platformString =
-      platformName === "linux"
-        ? `${platformName}-${archName}-gnu`
-        : platformName === "win32"
-          ? `${platformName}-${archName}-msvc`
-          : `${platformName}-${archName}`;
 
     // Try to load the platform-specific N-API module
     try {

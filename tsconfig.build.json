@@ -9,7 +9,7 @@
     "isolatedModules": true,
     "noEmitOnError": false,
     "skipDefaultLibCheck": true,
-    "noCheck": true,
+    "skipLibCheck": true,
     "preserveWatchOutput": true,
     "removeComments": false,
     "noEmit": false,

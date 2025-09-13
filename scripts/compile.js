@@ -35,23 +35,25 @@ function removeDir(dir) {
 
 function runCommand(command, args, cwd) {
   return new Promise((resolve, reject) => {
-    const process = spawn(command, args, {
+    const isWindows = process.platform === "win32";
+    const childProcess = spawn(command, args, {
       cwd,
       stdio: ["inherit", "pipe", "pipe"],
+      shell: isWindows, // Use shell on Windows to handle npx properly
     });
 
     let stdout = "";
     let stderr = "";
 
-    process.stdout?.on("data", data => {
+    childProcess.stdout?.on("data", data => {
       stdout += data.toString();
     });
 
-    process.stderr?.on("data", data => {
+    childProcess.stderr?.on("data", data => {
       stderr += data.toString();
     });
 
-    process.on("close", code => {
+    childProcess.on("close", code => {
       if (code === 0) {
         resolve({ code, stdout, stderr });
       } else {
@@ -68,17 +70,26 @@ removeDir(DIST_DIR);
 ensureDir(DIST_DIR);
 
 try {
-  // Run TypeScript compiler with no type checking for build
+  // Run TypeScript compiler for build
   await runCommand(
     "npx",
-    ["tsc", "--project", "tsconfig.build.json", "--noCheck"],
+    ["tsc", "--project", "tsconfig.build.json"],
     PROJECT_ROOT
   );
   console.log("✅ TypeScript compilation successful");
-} catch ({ code, stdout, stderr }) {
+} catch (error) {
   console.error("❌ TypeScript compilation failed:");
-  if (stderr) console.error(stderr);
-  if (stdout) console.error(stdout);
+  console.error("Error code:", error.code);
+  if (error.stderr) {
+    console.error("STDERR:", error.stderr);
+  }
+  if (error.stdout) {
+    console.error("STDOUT:", error.stdout);
+  }
+  if (error.message) {
+    console.error("Error message:", error.message);
+  }
+  console.error("Full error:", error);
   process.exit(1);
 }
 
